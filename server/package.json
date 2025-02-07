@@ -1,23 +1,41 @@
 {
-  "name": "demo",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
-  },
-  "author": "",
-  "type": "module",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "body-parser": "^1.20.3",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "pg": "^8.13.1",
-    "sequelize": "^6.37.5"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.9"
-  }
+    "name": "whowins-server",
+    "version": "1.0.0",
+    "description": "Who Wins server",
+    "homepage": "https://github.com/niishaan/whowins#readme",
+    "bugs": {
+        "url": "https://github.com/niishaan/whowins/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/niishaan/whowins.git"
+    },
+    "license": "ISC",
+    "author": "Nishan Bista",
+    "type": "module",
+    "main": "./src/server.js",
+    "scripts": {
+        "dev": "npx tsc --watch & nodemon dist/server.js",
+        "start": "node dist/server.js",
+        "build": "npx tsc"
+    },
+    "devDependencies": {
+        "@types/cookie-parser": "^1.4.8",
+        "@types/cors": "^2.8.17",
+        "@types/express": "^5.0.0",
+        "@types/node": "^22.10.7",
+        "nodemon": "^3.1.9",
+        "prettier": "^3.4.2",
+        "typescript": "^5.7.3"
+    },
+    "dependencies": {
+        "@sequelize/core": "^7.0.0-alpha.44",
+        "@sequelize/postgres": "^7.0.0-alpha.44",
+        "cookie-parser": "^1.4.7",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2",
+        "pg": "^8.13.1",
+        "pg-hstore": "^2.3.4"
+    }
 }
