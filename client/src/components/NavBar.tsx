@@ -1,53 +1,57 @@
-// components/Navbar.tsx
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from "@tanstack/react-router";
+import { useAuthStore } from "../stores";
+import { FaChevronDown } from "react-icons/fa";
+import logo from "../assets/logo2.svg"
 
-import HopehubLogo from '../assets/HopehubLogo.svg';
+function NavBar() {
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
-const Navbar: React.FC = () => {
   return (
-    <nav className="flex justify-between items-center py-4 px-8 bg-white shadow sticky top-0 z-[1000]">
-      <div className="flex items-center">
-        <Link to="/" className="flex items-center no-underline">
-          <img
-          src={HopehubLogo}
-            alt="Logo"
-            className="h-10 w-20 mr-2"
-          />
-        </Link>
-      </div>
-
-      <ul className="flex justify-evenly w-[50%] list-none m-0 p-0 gap-8">
-        <li>
-          <Link
-            to="/"
-            className="group relative py-2 text-base font-medium text-gray-600 transition-colors duration-200 ease-in-out hover:text-[#059212]"
-          >
+    <header className="bg-[#f8f7e8] text-[#333]">
+      <div className="max-w-[1350px] mx-auto px-4 h-24 flex items-center justify-between">
+        {/* Left side */}
+        <nav className="flex items-center space-x-6">
+          <Link to="/" className="hover:text-[#0b4029] transition">
             Home
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#059212] transform scale-x-0 transition-transform duration-200 ease-out group-hover:scale-x-100 origin-right"></span>
           </Link>
-        </li>
-        <li>
-          <Link
-            to="/signup"
-            className="group relative py-2 text-base font-medium text-gray-600 transition-colors duration-200 ease-in-out hover:text-[#059212]"
-          >
-            Signup
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#059212] transform scale-x-0 transition-transform duration-200 ease-out group-hover:scale-x-100 origin-right"></span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/login"
-            className="group relative py-2 text-base font-medium text-gray-600 transition-colors duration-200 ease-in-out hover:text-[#059212]"
-          >
-            Login
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#059212] transform scale-x-0 transition-transform duration-200 ease-out group-hover:scale-x-100 origin-right"></span>
-          </Link>
-        </li>
-      </ul>
-    </nav>
-  );
-};
+          {isLoggedIn && (
+            <Link
+              to="/createfund"
+              className="bg-[#0b3d40] text-[#b9ff66] px-5 py-2 rounded hover:opacity-80 transition"
+            >
+              Start A Hope
+            </Link>
+          )}
+        </nav>
+        {/* Center brand text */}
+        <img src={logo} alt="HopeHub" className="w-28 max-[500px]:hidden" />
 
-export default Navbar;
+        {/* Right side */}
+        <nav className="flex items-center space-x-6">
+          {!isLoggedIn && (
+            <>
+              <Link to="/signup" className="hover:text-[#0b3d40] transition">
+                Signup
+              </Link>
+              <Link to="/login" className="hover:text-[#0b3d40] transition">
+                Login
+              </Link>
+            </>
+          )}
+          {isLoggedIn && (
+            <>
+              <Link to="/about" className="hover:text-[#0b3d40] transition">
+                About
+              </Link>
+              <Link to="/account" className="hover:text-[#0b3d40] transition flex justify-center items-center">
+                Account <FaChevronDown className="text-xs ml-2"/>
+              </Link>
+            </>
+          )}
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+export default NavBar;

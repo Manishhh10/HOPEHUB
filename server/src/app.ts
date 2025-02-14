@@ -11,7 +11,7 @@ export const app = express();
 
 const corsOptions: CorsOptions = {
     credentials: true,
-    origin: process.env.CLIENT_URL,
+    origin: "http://localhost:5173",
 };
 
 app.use(cors(corsOptions));

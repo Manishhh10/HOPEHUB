@@ -2,8 +2,8 @@ import { Sequelize, importModels } from "@sequelize/core";
 import { PostgresDialect } from "@sequelize/postgres";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { User } from "../models/user.model.js";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const sequelize = new Sequelize({
     database: process.env.DB_NAME,
@@ -11,7 +11,7 @@ export const sequelize = new Sequelize({
     password: process.env.DB_PASSWORD,
     host: "localhost",
     dialect: PostgresDialect,
-    models: await importModels(resolve(__dirname + "/../models/**/*.model.{ts,js}")),
+    models: [User],
 });
 
 export async function connectDB() {
@@ -21,7 +21,7 @@ export async function connectDB() {
 
         if (process.env.RUNTIME === "dev") {
             console.log("Development mode: Syncing tables with alter.");
-            await sequelize.sync({ alter: true });
+            await sequelize.sync({ alter: true , force: true });
         } else {
             await sequelize.sync();
         }
