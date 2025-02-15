@@ -13,6 +13,8 @@
 import { Route as rootRoute } from "./routes/__root"
 import { Route as SignupImport } from "./routes/signup"
 import { Route as LoginImport } from "./routes/login"
+import { Route as DonationPageImport } from "./routes/DonationPage"
+import { Route as CreateFundImport } from "./routes/CreateFund"
 import { Route as IndexImport } from "./routes/index"
 
 // Create/Update Routes
@@ -26,6 +28,18 @@ const SignupRoute = SignupImport.update({
 const LoginRoute = LoginImport.update({
   id: "/login",
   path: "/login",
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DonationPageRoute = DonationPageImport.update({
+  id: "/DonationPage",
+  path: "/DonationPage",
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CreateFundRoute = CreateFundImport.update({
+  id: "/CreateFund",
+  path: "/CreateFund",
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -44,6 +58,20 @@ declare module "@tanstack/react-router" {
       path: "/"
       fullPath: "/"
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    "/CreateFund": {
+      id: "/CreateFund"
+      path: "/CreateFund"
+      fullPath: "/CreateFund"
+      preLoaderRoute: typeof CreateFundImport
+      parentRoute: typeof rootRoute
+    }
+    "/DonationPage": {
+      id: "/DonationPage"
+      path: "/DonationPage"
+      fullPath: "/DonationPage"
+      preLoaderRoute: typeof DonationPageImport
       parentRoute: typeof rootRoute
     }
     "/login": {
@@ -67,12 +95,16 @@ declare module "@tanstack/react-router" {
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
+  "/CreateFund": typeof CreateFundRoute
+  "/DonationPage": typeof DonationPageRoute
   "/login": typeof LoginRoute
   "/signup": typeof SignupRoute
 }
 
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
+  "/CreateFund": typeof CreateFundRoute
+  "/DonationPage": typeof DonationPageRoute
   "/login": typeof LoginRoute
   "/signup": typeof SignupRoute
 }
@@ -80,27 +112,33 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   "/": typeof IndexRoute
+  "/CreateFund": typeof CreateFundRoute
+  "/DonationPage": typeof DonationPageRoute
   "/login": typeof LoginRoute
   "/signup": typeof SignupRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: "/" | "/login" | "/signup"
+  fullPaths: "/" | "/CreateFund" | "/DonationPage" | "/login" | "/signup"
   fileRoutesByTo: FileRoutesByTo
-  to: "/" | "/login" | "/signup"
-  id: "__root__" | "/" | "/login" | "/signup"
+  to: "/" | "/CreateFund" | "/DonationPage" | "/login" | "/signup"
+  id: "__root__" | "/" | "/CreateFund" | "/DonationPage" | "/login" | "/signup"
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CreateFundRoute: typeof CreateFundRoute
+  DonationPageRoute: typeof DonationPageRoute
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CreateFundRoute: CreateFundRoute,
+  DonationPageRoute: DonationPageRoute,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
 }
@@ -116,12 +154,20 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/CreateFund",
+        "/DonationPage",
         "/login",
         "/signup"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/CreateFund": {
+      "filePath": "CreateFund.tsx"
+    },
+    "/DonationPage": {
+      "filePath": "DonationPage.tsx"
     },
     "/login": {
       "filePath": "login.tsx"

@@ -38,6 +38,7 @@ export const responseErrorHandler = (
     res: Response,
     next: NextFunction,
 ) => {
+    console.error(err);  // This will log the error in the console
     if (err instanceof ErrorResponse) {
         res.status(err.status_code).json(err.toJSON());
     } else {
