@@ -1,2 +1,3 @@
 import { authRouter } from "./auth.route.js";
-export { authRouter };
+import fundRouter from "./fund.route.js";
+export { authRouter,fundRouter };

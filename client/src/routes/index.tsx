@@ -51,7 +51,7 @@ function HomePage() {
       </section>
 
       {/* Example content area */}
-      <section className="bg-[#f8f7e8] text-[#333] py-10">
+      {/* <section className="bg-[#f8f7e8] text-[#333] py-10">
         <div className="max-w-4xl mx-auto px-4">
           <p className="text-center">
             {isLoggedIn
@@ -59,7 +59,7 @@ function HomePage() {
               : "You're not logged in. Sign up or log in to start a hope."}
           </p>
         </div>
-      </section>
+      </section> */}
     </main>
   );
 }

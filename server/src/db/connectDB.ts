@@ -3,6 +3,7 @@ import { PostgresDialect } from "@sequelize/postgres";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { User } from "../models/user.model.js";
+import { Fund } from "../models/fund.model.js";
 
 
 export const sequelize = new Sequelize({

@@ -2,6 +2,7 @@ import express, { Response, Request } from "express";
 import { responseErrorHandler } from "./utils/ErrorResponse.js";
 import cors, { CorsOptions } from "cors";
 import cookieParser from "cookie-parser";
+import fundRouter from "./routes/fund.route.js";
 
 export const app = express();
 
@@ -18,6 +19,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(cookieParser());
+app.use("/api/v1/funds", fundRouter);
 
 /*
  * Routes
