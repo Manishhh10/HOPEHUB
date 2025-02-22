@@ -1,17 +1,9 @@
 {
-    "name": "whowins-server",
+    "name": "hopehub-server",
     "version": "1.0.0",
-    "description": "Who Wins server",
-    "homepage": "https://github.com/niishaan/whowins#readme",
-    "bugs": {
-        "url": "https://github.com/niishaan/whowins/issues"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/niishaan/whowins.git"
-    },
+    "description": "HopeHub server",
     "license": "ISC",
-    "author": "Nishan Bista",
+    "author": "Manish",
     "type": "module",
     "main": "./src/server.js",
     "scripts": {

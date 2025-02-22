@@ -69,7 +69,7 @@ export const refreshAccessToken = asyncHandler(
             if (error?.message == "jwt expired") {
                 return res
                     .clearCookie("access_token")
-                    .clearCookie("refresh_token)")
+                    .clearCookie("refresh_token")
                     .status(401)
                     .json(
                         new ErrorResponse(

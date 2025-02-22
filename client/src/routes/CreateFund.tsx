@@ -1,157 +1,88 @@
-import React, { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
-import toast from "react-hot-toast";
-import { Route as TanStackRoute, RootRoute } from "@tanstack/react-router";
+// client/src/routes/createfund.tsx
+import { createFileRoute } from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+import { states, cities, State } from "../utils/locations"; // adjust imports as needed
+import { useAuthStore } from "../stores";
+import { api } from "../utils";
+import { useEffect } from "react";
 
-export const rootRoute = new RootRoute({
-  component: () => <div>Root Layout</div>,
+export const Route = createFileRoute("/createfund")({
+  component: CreateFundPage,
 });
 
-const categories = [
-  "Animals",
-  "Business",
-  "Community",
-  "Competitions",
-  "Creative",
-  "Education",
-  "Emergencies",
-  "Environment",
-  "Events",
-  "Faith",
-  "Family",
-  "Funerals & Memorials",
-  "Medical",
-  "Monthly Bills",
-  "Newlyweds",
-  "Other",
-  "Sports",
-  "Travel",
-  "Ukraine Relief",
-  "Volunteer",
-  "Wishes",
-];
+function CreateFundPage() {
+  const { register, handleSubmit, watch, setValue } = useForm();
+  const selectedState = watch("state");
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
-const states = [
-  "Province No. 1",
-  "Province No. 2",
-  "Bagmati",
-  "Gandaki",
-  "Lumbini",
-  "Karnali",
-  "Sudurpashchim",
-];
-
-const citiesByState: Record<string, string[]> = {
-  "Province No. 1": ["Biratnagar", "Illam"],
-  "Province No. 2": ["Janakpur", "Birgunj"],
-  "Bagmati": ["Kathmandu", "Lalitpur", "Bhaktapur"],
-  "Gandaki": ["Pokhara", "Baglung"],
-  "Lumbini": ["Butwal", "Nepalgunj"],
-  "Karnali": ["Birendranagar", "Chhayanath Rara"],
-  "Sudurpashchim": ["Mahendranagar", "Dadeldhura"],
-};
-
-export function CreateFund() {
-  const [formData, setFormData] = useState({
-    title: "",
-    category: categories[0],
-    reason: "",
-    state: states[0],
-    city: citiesByState[states[0]][0],
-    donation_amount: "",
-    donation_start_date: "",
-    donation_end_date: "",
-  });
-
-  // Separate state for the image file
-  const [imageFile, setImageFile] = useState<File | null>(null);
-
-  const navigate = useNavigate();
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-      // When state changes, update city automatically:
-      ...(name === "state" && { city: citiesByState[value][0] }),
-    }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setImageFile(e.target.files[0]);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!imageFile) {
-      toast.error("Please upload an image.");
-      return;
-    }
-
-    try {
-      const form = new FormData();
-      form.append("title", formData.title);
-      form.append("category", formData.category);
-      form.append("reason", formData.reason);
-      form.append("state", formData.state);
-      form.append("city", formData.city);
-      form.append("donation_amount", formData.donation_amount);
-      form.append("donation_start_date", formData.donation_start_date);
-      form.append("donation_end_date", formData.donation_end_date);
-      form.append("image", imageFile);
-
-      // Log the data being sent
-    console.log("Form data being sent:", form);
-
-      const response = await fetch("/api/v1/funds", {
-        method: "POST",
-        body: form,
-      });
-      const data = await response.json();
-      if (response.ok) {
-        toast.success("Fund created successfully!");
-        // Navigate to DonationPage (as defined in your route tree)
-        navigate({ to: "/DonationPage" });
-      } else {
-        toast.error(data.message || "Error creating fund");
+  useEffect(() => {
+    if (selectedState) {
+      const stateCities = cities[selectedState as State];
+      if (stateCities && stateCities.length > 0) {
+        setValue("city", stateCities[0]);
       }
+    }
+  }, [selectedState, setValue]);
+
+  const categories = [
+    "Medical",
+    "Education",
+    "Animals",
+    "Environment",
+    "Business",
+    "Community",
+    "Sports",
+    "Other",
+  ];
+
+  const onSubmit = async (data: any) => {
+    try {
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("category", data.category);
+      formData.append("reason", data.reason);
+      formData.append("state", data.state);
+      formData.append("city", data.city);
+      formData.append("target_amount", data.target_amount);
+      // Convert dates to ISO format
+      formData.append("start_date", new Date(data.start_date).toISOString());
+      formData.append("end_date", new Date(data.end_date).toISOString());
+      // Append file: data.image is a FileList from the file input
+      formData.append("image", data.image[0]);
+
+      await api.post("/api/v1/funds", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      window.location.href = "/";
     } catch (error) {
-      console.error("Error creating fund:", error);
-      toast.error("Error creating fund");
+      console.error("Fund creation failed:", error);
     }
   };
+
+  if (!isLoggedIn) return <div>Please login to create a fund</div>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-4">Create a Fund</h2>
-      <form onSubmit={handleSubmit}>
-        {/* Section 1: Fundraiser's Information */}
-        <div className="mb-6 border p-4 rounded">
-          <h3 className="text-xl font-semibold mb-2">Fundraiser's Information</h3>
-          <div className="mb-4">
-            <label className="block mb-1">Title</label>
+    <div className="max-w-2xl mx-auto p-6 bg-[#f8f7e8] min-h-screen">
+      <h1 className="text-3xl font-bold text-[#0b3d40] mb-8">Create New Hope</h1>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Fundraiser Info Section */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold text-[#09442d]">Fundraiser Information</h2>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-[#333]">Title</label>
             <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
+              {...register("title")}
+              className="w-full p-2 border rounded focus:ring-2 focus:ring-[#b9ff66]"
               required
             />
           </div>
-          <div className="mb-4">
-            <label className="block mb-1">Category</label>
+          {/* Category Dropdown */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-[#333]">Category</label>
             <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
+              {...register("category")}
+              className="w-full p-2 border rounded focus:ring-2 focus:ring-[#b9ff66]"
+              required
             >
               {categories.map((cat) => (
                 <option key={cat} value={cat}>
@@ -160,114 +91,106 @@ export function CreateFund() {
               ))}
             </select>
           </div>
-          <div className="mb-4">
-            <label className="block mb-1">Reason</label>
+          {/* Reason Textarea */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-[#333]">Reason</label>
             <textarea
-              name="reason"
-              value={formData.reason}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
+              {...register("reason")}
+              className="w-full p-2 border rounded h-32 focus:ring-2 focus:ring-[#b9ff66]"
               required
             />
           </div>
-          {/* File Input for image */}
-          <div className="mb-4">
-            <label className="block mb-1">Upload Image</label>
+          {/* File Input for Image */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-[#333]">Upload Image</label>
             <input
               type="file"
-              name="image"
-              accept="image/*"
-              onChange={handleFileChange}
+              {...register("image")}
+              className="w-full p-2 border rounded focus:ring-2 focus:ring-[#b9ff66]"
               required
+              accept="image/*"
             />
           </div>
-        </div>
+        </section>
 
-        {/* Section 2: Fundraising Location */}
-        <div className="mb-6 border p-4 rounded">
-          <h3 className="text-xl font-semibold mb-2">Fundraising Location</h3>
-          <div className="mb-4">
-            <label className="block mb-1">State</label>
-            <select
-              name="state"
-              value={formData.state}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-            >
-              {states.map((state) => (
-                <option key={state} value={state}>
-                  {state}
-                </option>
-              ))}
-            </select>
+        {/* Location Section */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold text-[#09442d]">Location</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-[#333]">State</label>
+              <select
+                {...register("state")}
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-[#b9ff66]"
+                required
+              >
+                {(Object.keys(states) as State[]).map((state) => (
+                  <option key={state} value={state}>
+                    {state}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-[#333]">City</label>
+              <select
+                {...register("city")}
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-[#b9ff66]"
+                required
+                disabled={!selectedState}
+              >
+                {selectedState &&
+                  cities[selectedState as State]?.map((city) => (
+                    <option key={city} value={city}>
+                      {city}
+                    </option>
+                  ))}
+              </select>
+            </div>
           </div>
-          <div className="mb-4">
-            <label className="block mb-1">City</label>
-            <select
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-            >
-              {citiesByState[formData.state].map((city) => (
-                <option key={city} value={city}>
-                  {city}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+        </section>
 
-        {/* Section 3: Donation Information */}
-        <div className="mb-6 border p-4 rounded">
-          <h3 className="text-xl font-semibold mb-2">Donation Information</h3>
-          <div className="mb-4">
-            <label className="block mb-1">Amount</label>
+        {/* Donation Section */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold text-[#09442d]">Donation Details</h2>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-[#333]">Target Amount (NPR)</label>
             <input
               type="number"
-              name="donation_amount"
-              value={formData.donation_amount}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
+              {...register("target_amount")}
+              className="w-full p-2 border rounded focus:ring-2 focus:ring-[#b9ff66]"
               required
             />
           </div>
-          <div className="mb-4">
-            <label className="block mb-1">Donation Start Date</label>
-            <input
-              type="date"
-              name="donation_start_date"
-              value={formData.donation_start_date}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-              required
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-[#333]">Start Date</label>
+              <input
+                type="date"
+                {...register("start_date")}
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-[#b9ff66]"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-[#333]">End Date</label>
+              <input
+                type="date"
+                {...register("end_date")}
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-[#b9ff66]"
+                required
+              />
+            </div>
           </div>
-          <div className="mb-4">
-            <label className="block mb-1">Donation End Date</label>
-            <input
-              type="date"
-              name="donation_end_date"
-              value={formData.donation_end_date}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-              required
-            />
-          </div>
-        </div>
+        </section>
+
         <button
           type="submit"
-          className="w-full bg-[#0b3d40] text-[#b9ff66] py-2 rounded hover:opacity-80 transition"
+          className="w-full bg-[#0b3d40] text-[#b9ff66] py-3 rounded hover:opacity-90 transition"
         >
-          Create Fund
+          Create Hope Fund
         </button>
       </form>
     </div>
   );
 }
-
-export const Route = new TanStackRoute({
-  getParentRoute: () => rootRoute,
-  path: "/CreateFund",
-  component: CreateFund,
-});

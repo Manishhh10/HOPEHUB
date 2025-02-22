@@ -1,18 +1,16 @@
-import { Sequelize, importModels } from "@sequelize/core";
+// server/db/connectDB.ts
+import { Sequelize } from "@sequelize/core";
 import { PostgresDialect } from "@sequelize/postgres";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import { User } from "../models/user.model.js";
 import { Fund } from "../models/fund.model.js";
 
-
 export const sequelize = new Sequelize({
     database: process.env.DB_NAME,
-    user: process.env.DB_USER,
+    user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     host: "localhost",
     dialect: PostgresDialect,
-    models: [User],
+    models: [User, Fund],
 });
 
 export async function connectDB() {

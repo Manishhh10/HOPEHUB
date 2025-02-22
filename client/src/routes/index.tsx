@@ -1,13 +1,30 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useAuthStore } from "../stores";
 import { Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { api } from "../utils/api";
 
 // Create your route if using file-based routing:
 export const Route = createFileRoute("/")({
     component: HomePage,
 });
 function HomePage() {
+    // Add this useEffect and state
+    const [funds, setFunds] = useState<any[]>([]);
     const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+
+    useEffect(() => {
+        const loadFunds = async () => {
+            try {
+                const response = await api.get("/api/v1/funds");
+                // Ensure funds is never null:
+                setFunds(response.data.data || []);
+            } catch (error) {
+                console.error("Error loading funds:", error);
+            }
+        };
+        loadFunds();
+    }, []);
 
     return (
         <main className="min-h-screen flex flex-col items-center bg-[#f8f7e8]">
@@ -35,11 +52,14 @@ function HomePage() {
                     </p>
                     <div className="flex flex-col md:flex-row gap-4 md:gap-6">
                         <Link
-                            to="/DonationPage"
+                            to={funds.length > 0 ? "/funds" : "/createfund"}
                             className="bg-[#b9ff66] text-[#09442d] font-semibold px-6 py-3 rounded hover:opacity-80 transition"
                         >
-                            Start Donating
+                            {funds.length > 0
+                                ? "Start Donating"
+                                : "Start Fundraising"}
                         </Link>
+
                         <Link
                             to="/learn"
                             className="bg-white text-[#09442d] font-semibold px-6 py-3 rounded hover:opacity-80 transition"

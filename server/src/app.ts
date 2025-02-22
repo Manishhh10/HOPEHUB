@@ -2,6 +2,9 @@ import express, { Request, Response } from "express";
 import { responseErrorHandler } from "./utils/ErrorResponse.js";
 import cors, { CorsOptions } from "cors";
 import cookieParser from "cookie-parser";
+// server/src/app.ts
+
+
 export const app = express();
 
 /*
@@ -38,8 +41,11 @@ app.get("/", async (req: Request, res: Response) => {
 import { authRouter } from "./routes/auth.route.js";
 app.use("/api/v1/auth", authRouter);
 
-import fundRouter from "./routes/fund.route.js";
-app.use("/api/v1/funds", fundRouter);
+// import { fundRouter } from "./routes/fund.route.js";
+// app.use("/api", (req,res)=>{
+//   return res.status(200).json({test:"Pass"})
+// });
+// app.use("/api/v1/funds", fundRouter);
 
 // Error response handler always at last after all routes
 app.use(responseErrorHandler);
