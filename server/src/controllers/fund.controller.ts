@@ -75,6 +75,23 @@ export const createFund = asyncHandler(async (req: Request, res: Response) => {
   );
 });
 
+export const deleteFund = asyncHandler(async (req: Request, res: Response) => {
+  const fundId = req.params.id;
+  if (!req.user?.id) {
+    return res.status(401).json(new ErrorResponse(401, "auth_error", false, "Not authenticated"));
+  }
+  const fund = await Fund.findByPk(fundId);
+  if (!fund) {
+    return res.status(404).json(new ErrorResponse(404, "not_found", false, "Fund not found"));
+  }
+  if (fund.userId !== req.user.id) {
+    return res.status(403).json(new ErrorResponse(403, "not_allowed", false, "Not allowed to delete this fund"));
+  }
+  await fund.destroy();
+  res.status(200).json(new SuccessResponse(200, true, "Fund deleted successfully", null));
+});
+
+
 export const getFunds = asyncHandler(async (req: Request, res: Response) => {
   const funds = await Fund.findAll();
   res.status(200).json(new SuccessResponse(200, true, "Funds retrieved", funds));

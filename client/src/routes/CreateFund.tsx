@@ -1,7 +1,7 @@
 // client/src/routes/createfund.tsx
 import { createFileRoute } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
-import { states, cities, State } from "../utils/locations"; // adjust imports as needed
+import { states, cities, State } from "../utils/locations";
 import { useAuthStore } from "../stores";
 import { api } from "../utils";
 import { useEffect } from "react";
