@@ -28,6 +28,7 @@ function FundsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {funds.map((fund) => (
           <div key={fund.id} className="bg-white rounded-lg shadow-md p-6">
+            <img src={fund.image} alt="" />
             <h3 className="text-xl font-semibold text-[#09442d]">{fund.title}</h3>
             <p className="text-sm text-gray-600 mt-2">{fund.category}</p>
             <div className="mt-4 space-y-2">

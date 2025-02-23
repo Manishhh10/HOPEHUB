@@ -15,11 +15,8 @@ import {
   CreatedAt,
   UpdatedAt,
   NotNull,
-  AllowNull,
-  Default
 } from "@sequelize/core/decorators-legacy";
 import { User } from "./user.model.js";
-import { STRING } from "@sequelize/core/_non-semver-use-at-your-own-risk_/abstract-dialect/data-types.js";
 
 @Table({ tableName: "funds" })
 export class Fund extends Model<
@@ -54,6 +51,7 @@ export class Fund extends Model<
   // New field for the image URL (stores the file name/path)
   // Fixed image_url declaration
   @Attribute(DataTypes.STRING)
+  @NotNull
   declare image_url: CreationOptional<string>;
 
   @Attribute(DataTypes.FLOAT)
