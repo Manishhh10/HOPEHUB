@@ -20,7 +20,7 @@ export async function connectDB() {
 
         if (process.env.RUNTIME === "dev") {
             console.log("Development mode: Syncing tables with alter.");
-            await sequelize.sync({ alter: true , force: true });
+            await sequelize.sync({ alter: true });
         } else {
             await sequelize.sync();
         }
