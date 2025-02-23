@@ -1,4 +1,4 @@
-// server/controllers/fund.controller.ts
+// server/src/controllers/fund.controller.ts
 import { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { Fund } from "../models/fund.model.js";
@@ -18,12 +18,12 @@ export const createFund = asyncHandler(async (req: Request, res: Response) => {
   } = req.body;
 
   if (!req.user?.id) {
-    return res
-      .status(401)
-      .json(new ErrorResponse(401, "auth_error", false, "Not authenticated"));
+    return res.status(401).json(
+      new ErrorResponse(401, "auth_error", false, "Not authenticated")
+    );
   }
 
-  // Check required fields (including file)
+  // Check required fields
   const requiredFields = [
     "title",
     "category",
@@ -36,26 +36,24 @@ export const createFund = asyncHandler(async (req: Request, res: Response) => {
   ];
   const missingFields = requiredFields.filter((field) => !req.body[field]);
   if (missingFields.length > 0) {
-    return res
-      .status(400)
-      .json(
-        new ErrorResponse(
-          400,
-          "invalid_payload",
-          false,
-          `Missing fields: ${missingFields.join(", ")}`
-        )
-      );
+    return res.status(400).json(
+      new ErrorResponse(
+        400,
+        "invalid_payload",
+        false,
+        `Missing fields: ${missingFields.join(", ")}`
+      )
+    );
   }
 
-  // Make sure a file was uploaded
+  // Ensure a file was uploaded
   if (!req.file) {
-    return res
-      .status(400)
-      .json(new ErrorResponse(400, "invalid_payload", false, "Image is required"));
+    return res.status(400).json(
+      new ErrorResponse(400, "invalid_payload", false, "Image is required")
+    );
   }
 
-  // Use the file's filename as the image_url (you could also use req.file.path if needed)
+  // Use the uploaded file's filename for the image_url
   const image_url = req.file.filename;
 
   // Create the fund record
