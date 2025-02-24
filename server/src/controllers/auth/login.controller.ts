@@ -59,12 +59,19 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
         .cookie("refresh_token", refreshToken, cookieOptions)
         .status(200)
         .json(
-            new SuccessResponse<{
-                access_token: string;
+            new SuccessResponse<{ 
+                access_token: string; 
                 refresh_token: string;
-            }>(200, true, "login successful", {
-                access_token: accessToken,
-                refresh_token: refreshToken,
-            }),
+                user: { id: number; email: string; first_name: string; last_name: string };
+              }>(200, true, "login successful", {
+                  access_token: accessToken,
+                  refresh_token: refreshToken,
+                  user: {
+                    id: user.id,
+                    email: user.email,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                  },
+              })
         );
 });

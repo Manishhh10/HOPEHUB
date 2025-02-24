@@ -23,7 +23,7 @@ export const generateAccessToken = async (userId: number): Promise<string> => {
             created_at: user.created_at,
         },
         secret,
-        { expiresIn: "2m" },
+        { expiresIn: "1h" },
     );
 
     return token;
@@ -48,7 +48,7 @@ export const generateRefreshToken = async (userId: number): Promise<string> => {
             email: user.email,
         },
         secret,
-        { expiresIn: "5m" },
+        { expiresIn: "24h" },
     );
 
     return token;
