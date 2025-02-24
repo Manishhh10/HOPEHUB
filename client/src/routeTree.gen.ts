@@ -14,8 +14,8 @@ import { Route as rootRoute } from "./routes/__root"
 import { Route as SignupImport } from "./routes/signup"
 import { Route as LoginImport } from "./routes/login"
 import { Route as FundsImport } from "./routes/funds"
-import { Route as EditfundImport } from "./routes/editfund"
 import { Route as CreatefundImport } from "./routes/createfund"
+import { Route as EditfundIdImport } from "./routes/$editfundId"
 import { Route as IndexImport } from "./routes/index"
 
 // Create/Update Routes
@@ -38,15 +38,15 @@ const FundsRoute = FundsImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const EditfundRoute = EditfundImport.update({
-  id: "/editfund",
-  path: "/editfund",
-  getParentRoute: () => rootRoute,
-} as any)
-
 const CreatefundRoute = CreatefundImport.update({
   id: "/createfund",
   path: "/createfund",
+  getParentRoute: () => rootRoute,
+} as any)
+
+const EditfundIdRoute = EditfundIdImport.update({
+  id: "/$editfundId",
+  path: "/$editfundId",
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -67,18 +67,18 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    "/$editfundId": {
+      id: "/$editfundId"
+      path: "/$editfundId"
+      fullPath: "/$editfundId"
+      preLoaderRoute: typeof EditfundIdImport
+      parentRoute: typeof rootRoute
+    }
     "/createfund": {
       id: "/createfund"
       path: "/createfund"
       fullPath: "/createfund"
       preLoaderRoute: typeof CreatefundImport
-      parentRoute: typeof rootRoute
-    }
-    "/editfund": {
-      id: "/editfund"
-      path: "/editfund"
-      fullPath: "/editfund"
-      preLoaderRoute: typeof EditfundImport
       parentRoute: typeof rootRoute
     }
     "/funds": {
@@ -109,8 +109,8 @@ declare module "@tanstack/react-router" {
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
+  "/$editfundId": typeof EditfundIdRoute
   "/createfund": typeof CreatefundRoute
-  "/editfund": typeof EditfundRoute
   "/funds": typeof FundsRoute
   "/login": typeof LoginRoute
   "/signup": typeof SignupRoute
@@ -118,8 +118,8 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
+  "/$editfundId": typeof EditfundIdRoute
   "/createfund": typeof CreatefundRoute
-  "/editfund": typeof EditfundRoute
   "/funds": typeof FundsRoute
   "/login": typeof LoginRoute
   "/signup": typeof SignupRoute
@@ -128,8 +128,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   "/": typeof IndexRoute
+  "/$editfundId": typeof EditfundIdRoute
   "/createfund": typeof CreatefundRoute
-  "/editfund": typeof EditfundRoute
   "/funds": typeof FundsRoute
   "/login": typeof LoginRoute
   "/signup": typeof SignupRoute
@@ -137,14 +137,20 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: "/" | "/createfund" | "/editfund" | "/funds" | "/login" | "/signup"
+  fullPaths:
+    | "/"
+    | "/$editfundId"
+    | "/createfund"
+    | "/funds"
+    | "/login"
+    | "/signup"
   fileRoutesByTo: FileRoutesByTo
-  to: "/" | "/createfund" | "/editfund" | "/funds" | "/login" | "/signup"
+  to: "/" | "/$editfundId" | "/createfund" | "/funds" | "/login" | "/signup"
   id:
     | "__root__"
     | "/"
+    | "/$editfundId"
     | "/createfund"
-    | "/editfund"
     | "/funds"
     | "/login"
     | "/signup"
@@ -153,8 +159,8 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EditfundIdRoute: typeof EditfundIdRoute
   CreatefundRoute: typeof CreatefundRoute
-  EditfundRoute: typeof EditfundRoute
   FundsRoute: typeof FundsRoute
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
@@ -162,8 +168,8 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EditfundIdRoute: EditfundIdRoute,
   CreatefundRoute: CreatefundRoute,
-  EditfundRoute: EditfundRoute,
   FundsRoute: FundsRoute,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
@@ -180,8 +186,8 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/$editfundId",
         "/createfund",
-        "/editfund",
         "/funds",
         "/login",
         "/signup"
@@ -190,11 +196,11 @@ export const routeTree = rootRoute
     "/": {
       "filePath": "index.tsx"
     },
+    "/$editfundId": {
+      "filePath": "$editfundId.tsx"
+    },
     "/createfund": {
       "filePath": "createfund.tsx"
-    },
-    "/editfund": {
-      "filePath": "editfund.tsx"
     },
     "/funds": {
       "filePath": "funds.tsx"

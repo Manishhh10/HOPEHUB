@@ -97,6 +97,18 @@ export const getFunds = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json(new SuccessResponse(200, true, "Funds retrieved", funds));
 });
 
+export const getFundById = asyncHandler(async (req: Request, res: Response) => {
+  const fundId = req.params.id;
+  const fund = await Fund.findByPk(fundId,{
+    attributes: { exclude: ['userId'] }
+  });
+  
+  if (!fund) {
+    return res.status(404).json(new ErrorResponse(404, "not_found", false, "Fund not found"));
+  }
+  res.status(200).json(new SuccessResponse(200, true, "Fund retrieved", fund));
+});
+
 export const updateFund = asyncHandler(async (req: Request, res: Response) => {
   const fundId = req.params.id;
   const {

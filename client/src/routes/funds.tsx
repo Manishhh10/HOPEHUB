@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute,useNavigate } from "@tanstack/react-router";
 import { api } from "../utils";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../stores";
@@ -10,6 +10,7 @@ export const Route = createFileRoute("/funds")({
 });
 
 function FundsPage() {
+
   const [funds, setFunds] = useState<any[]>([]);
   const currentUser = useAuthStore((state) => state.userData);
 
@@ -36,9 +37,9 @@ function FundsPage() {
     }
   };
 
+  const navigate = useNavigate();
   const editFund = (fundId: number) => {
-    // Redirect to an edit page (implement edit page if needed)
-    window.location.href = `/editfund/${fundId}`;
+    navigate({ to: "/$editfundId", params: { id: fundId.toString() } });
   };
 
   return (
