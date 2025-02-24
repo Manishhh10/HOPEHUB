@@ -96,3 +96,58 @@ export const getFunds = asyncHandler(async (req: Request, res: Response) => {
   const funds = await Fund.findAll();
   res.status(200).json(new SuccessResponse(200, true, "Funds retrieved", funds));
 });
+
+export const updateFund = asyncHandler(async (req: Request, res: Response) => {
+  const fundId = req.params.id;
+  const {
+    title,
+    category,
+    reason,
+    state,
+    city,
+    target_amount,
+    start_date,
+    end_date,
+  } = req.body;
+
+  if (!req.user?.id) {
+    return res.status(401).json(
+      new ErrorResponse(401, "auth_error", false, "Not authenticated")
+    );
+  }
+
+  const fund = await Fund.findByPk(fundId);
+  if (!fund) {
+    return res.status(404).json(
+      new ErrorResponse(404, "not_found", false, "Fund not found")
+    );
+  }
+
+  // Check ownership (casting to Number to avoid type mismatches)
+  if (Number(fund.userId) !== Number(req.user.id)) {
+    return res.status(403).json(
+      new ErrorResponse(403, "not_allowed", false, "Not allowed to update this fund")
+    );
+  }
+
+  // Update fund fields; if a field isn’t provided, keep its previous value
+  fund.title = title || fund.title;
+  fund.category = category || fund.category;
+  fund.reason = reason || fund.reason;
+  fund.state = state || fund.state;
+  fund.city = city || fund.city;
+  fund.target_amount = target_amount || fund.target_amount;
+  fund.start_date = start_date ? new Date(start_date) : fund.start_date;
+  fund.end_date = end_date ? new Date(end_date) : fund.end_date;
+
+  // If a new image is uploaded, update the image_url
+  if (req.file) {
+    fund.image_url = req.file.filename;
+  }
+
+  await fund.save();
+
+  res.status(200).json(
+    new SuccessResponse(200, true, "Fund updated successfully", fund)
+  );
+});
