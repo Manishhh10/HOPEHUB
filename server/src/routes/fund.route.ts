@@ -1,7 +1,7 @@
 // server/src/routes/fund.route.ts
 import { Router } from "express";
 import multer from "multer";
-import { createFund, getFunds, deleteFund } from "../controllers/fund.controller.js";
+import { createFund, getFunds, deleteFund,updateFund } from "../controllers/fund.controller.js";
 import { authenticate } from "../middlewares/authenticate.middleware.js";
 
 const storage = multer.diskStorage({
@@ -20,5 +20,6 @@ const fundRouter = Router();
 fundRouter.post("/", authenticate, upload.single("image"), createFund);
 fundRouter.get("/", getFunds);
 fundRouter.delete("/:id", authenticate, deleteFund);
+fundRouter.put("/:id", authenticate, upload.single("image"), updateFund);
 
 export { fundRouter };
