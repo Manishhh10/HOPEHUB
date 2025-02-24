@@ -1,4 +1,3 @@
-// client/src/routes/editfund.$editfundId.tsx
 import { createFileRoute, useParams, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
@@ -24,7 +23,6 @@ export const Route = createFileRoute("/editfund/$editfundId")({
 
 
 function EditFundPage() {
-  // Extract the parameter as "editfundId"
   const { editfundId } = useParams({ from: "/editfund/$editfundId" });
   console.log("Edit Fund ID:", editfundId); // Debugging
   const navigate = useNavigate();
@@ -45,7 +43,7 @@ function EditFundPage() {
     const fetchFund = async () => {
       try {
         if (editfundId) {
-          const response = await api.get(`/api/v1/funds/${editfundId}`);
+          const response = await api.get(`api/v1/funds/${editfundId}`);
           const fund = response.data.data;
           reset({
             title: fund.title,
