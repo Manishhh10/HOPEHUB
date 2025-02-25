@@ -17,8 +17,8 @@ export const Route = createRootRoute({
             try {
                 const response = await api.get("/api/v1/auth/verify-token");
                 if (response.data?.success && response.data?.is_authenticated) {
-                    const user = response.data.data.user;
-                    login(user);
+                  const user = response.data.data; 
+                  login(user);
                 }
             } catch (error) {
                 console.error("Token verification failed:", error);

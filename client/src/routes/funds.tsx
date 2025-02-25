@@ -83,7 +83,7 @@ function FundsPage() {
                                 - {new Date(fund.end_date).toLocaleDateString()}
                             </p>
                         </div>
-                        {!currentUser ? (
+                        {currentUser && currentUser.id === fund.userId ? (
                             <div className="mt-4 flex space-x-4">
                                 <button
                                     onClick={() => editFund(fund.id)}

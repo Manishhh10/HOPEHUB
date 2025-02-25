@@ -29,6 +29,7 @@ export const authenticate = asyncHandler(
             const user = await User.findByPk(decoded.id, {
                 attributes: { exclude: ["password", "refresh_token"] },
             });
+
             req.user = user;
             next();
         } catch (err: any) {
