@@ -30,7 +30,7 @@ export const authenticate = asyncHandler(
                 attributes: { exclude: ["password", "refresh_token"] },
             });
 
-            req.user = user;
+            req.user = user ? user.toJSON() : null;
             next();
         } catch (err: any) {
             if (err?.message == "jwt expired") {
