@@ -13,6 +13,8 @@ export const createFund = asyncHandler(async (req: Request, res: Response) => {
     state,
     city,
     target_amount,
+    amount_raised,
+    donation_count,
     start_date,
     end_date,
   } = req.body;
@@ -31,6 +33,8 @@ export const createFund = asyncHandler(async (req: Request, res: Response) => {
     "state",
     "city",
     "target_amount",
+    "amount_raised",
+    "donation_count",
     "start_date",
     "end_date",
   ];
@@ -64,6 +68,8 @@ export const createFund = asyncHandler(async (req: Request, res: Response) => {
     state,
     city,
     target_amount,
+    amount_raised,
+    donation_count,
     start_date,
     end_date,
     image_url,
@@ -162,4 +168,21 @@ export const updateFund = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json(
     new SuccessResponse(200, true, "Fund updated successfully", fund)
   );
+});
+
+export const donateToFund = asyncHandler(async (req: Request, res: Response) => {
+  const fundId = req.params.id;
+  const { amount } = req.body;
+  if (!amount) {
+    return res.status(400).json(new ErrorResponse(400, "invalid_payload", false, "Donation amount is required"));
+  }
+  const fund = await Fund.findByPk(fundId);
+  if (!fund) {
+    return res.status(404).json(new ErrorResponse(404, "not_found", false, "Fund not found"));
+  }
+  // Update donation progress
+  fund.amount_raised = (fund.amount_raised || 0) + Number(amount);
+  fund.donation_count = (fund.donation_count || 0) + 1;
+  await fund.save();
+  return res.status(200).json(new SuccessResponse(200, true, "Donation successful", fund));
 });

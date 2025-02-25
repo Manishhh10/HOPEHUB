@@ -17,7 +17,6 @@ function FundsPage() {
             params: { editfundId: fundId.toString() },
         });
     };
-
     const [funds, setFunds] = useState<any[]>([]);
     const currentUser = useAuthStore((state) => state.userData);
 
