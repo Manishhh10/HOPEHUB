@@ -13,8 +13,6 @@ export const createFund = asyncHandler(async (req: Request, res: Response) => {
     state,
     city,
     target_amount,
-    amount_raised,
-    donation_count,
     start_date,
     end_date,
   } = req.body;
@@ -33,8 +31,6 @@ export const createFund = asyncHandler(async (req: Request, res: Response) => {
     "state",
     "city",
     "target_amount",
-    "amount_raised",
-    "donation_count",
     "start_date",
     "end_date",
   ];
@@ -68,8 +64,8 @@ export const createFund = asyncHandler(async (req: Request, res: Response) => {
     state,
     city,
     target_amount,
-    amount_raised,
-    donation_count,
+    amount_raised:0,
+    donation_count:0,
     start_date,
     end_date,
     image_url,

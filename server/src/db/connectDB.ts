@@ -1,4 +1,3 @@
-// server/src/db/connectDB.ts
 import { Sequelize } from "@sequelize/core";
 import { PostgresDialect } from "@sequelize/postgres";
 import { User } from "../models/user.model.js";
@@ -19,8 +18,8 @@ export async function connectDB() {
     console.log("Database connected successfully!");
 
     if (process.env.RUNTIME === "dev") {
-      console.log("Development mode: Syncing tables with alter.");
-      await sequelize.sync({ alter: true });
+      console.log("Development mode: Syncing tables with alter."); 
+      await sequelize.sync({ alter: true});
     } else {
       await sequelize.sync();
     }
