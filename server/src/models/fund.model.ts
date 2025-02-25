@@ -1,4 +1,3 @@
-// server/models/fund.model.ts
 import {
   DataTypes,
   Model,
@@ -15,6 +14,7 @@ import {
   CreatedAt,
   UpdatedAt,
   NotNull,
+  Default,
 } from "@sequelize/core/decorators-legacy";
 import { User } from "./user.model.js";
 
@@ -48,8 +48,6 @@ export class Fund extends Model<
   @NotNull
   declare city: string;
 
-  // New field for the image URL (stores the file name/path)
-  // Fixed image_url declaration
   @Attribute(DataTypes.STRING)
   @NotNull
   declare image_url: CreationOptional<string>;
@@ -69,6 +67,15 @@ export class Fund extends Model<
   @Attribute(DataTypes.INTEGER)
   @NotNull
   declare userId: ForeignKey<User["id"]>;
+
+  // NEW: Track donation progress
+  @Attribute(DataTypes.FLOAT)
+  @Default(0)
+  declare amount_raised: number;
+
+  @Attribute(DataTypes.INTEGER)
+  @Default(0)
+  declare donation_count: number;
 
   @CreatedAt
   declare created_at: CreationOptional<Date>;
