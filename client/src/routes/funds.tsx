@@ -1,9 +1,8 @@
-// client/src/routes/funds.tsx
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { api } from "../utils";
 import { useEffect, useState, useMemo } from "react";
 import { useAuthStore } from "../stores";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash, FaSignInAlt } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 
 export const Route = createFileRoute("/funds")({
@@ -37,7 +36,7 @@ function FundsPage() {
         loadFunds();
     }, []);
 
-    // Filter funds based on "all" vs "mine" and search query
+    // Filtered funds
     const filteredFunds = useMemo(() => {
         return funds.filter((fund) => {
             const isMine = currentUser ? fund.userId === currentUser.id : false;
@@ -69,6 +68,14 @@ function FundsPage() {
         });
     };
 
+    // NEW: navigate to single-fund details page
+    const viewFundDetails = (fundId: number) => {
+        navigate({
+            to: "/fund-details/$fundId",
+            params: { fundId: fundId.toString() },
+        });
+    };
+
     const openDonationModal = (fund: any) => {
         setSelectedFund(fund);
         setDonationAmount("");
@@ -83,12 +90,10 @@ function FundsPage() {
         try {
             const response = await api.post(
                 `/api/v1/funds/${selectedFund.id}/donate`,
-                {
-                    amount: Number(donationAmount),
-                },
+                { amount: Number(donationAmount) },
             );
             toast.success("Donation successful!");
-            // Update the funds state with updated fund data from the donation response
+            // Update the funds state with updated fund data
             setFunds((prev) =>
                 prev.map((fund) =>
                     fund.id === selectedFund.id ? response.data.data : fund,
@@ -109,6 +114,14 @@ function FundsPage() {
 
             {/* Filter buttons and search bar */}
             <div className="flex flex-col md:flex-row items-center justify-between mb-6">
+                <input
+                    type="text"
+                    placeholder="Search funds by title..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="px-4 py-2 border rounded w-full md:w-1/3"
+                />
+
                 <div className="flex space-x-4 mb-4 md:mb-0">
                     <button
                         onClick={() => setFilter("all")}
@@ -131,25 +144,18 @@ function FundsPage() {
                         My Funds
                     </button>
                 </div>
-                <input
-                    type="text"
-                    placeholder="Search funds by title..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="px-4 py-2 border rounded w-full md:w-1/3"
-                />
             </div>
 
             {/* Funds Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredFunds.map((fund) => {
-                    // Calculate progress percentage
                     const progress = Math.min(
                         100,
                         (fund.amount_raised / fund.target_amount) * 100,
                     );
                     const isCompleted =
                         fund.amount_raised >= fund.target_amount;
+
                     return (
                         <div
                             key={fund.id}
@@ -157,14 +163,25 @@ function FundsPage() {
                         >
                             {fund.image_url && (
                                 <img
-                                    src={`${import.meta.env.VITE_API_ENDPOINT}/uploads/${fund.image_url}`}
+                                    src={`${
+                                        import.meta.env.VITE_API_ENDPOINT
+                                    }/uploads/${fund.image_url}`}
                                     alt={fund.title}
                                     className="mb-4 w-full h-56 object-cover rounded-lg"
                                 />
                             )}
-                            <h3 className="text-xl font-semibold text-primary">
-                                {fund.title}
-                            </h3>
+                            <div className="flex justify-between items-start">
+                                <h3 className="text-xl font-semibold text-primary">
+                                    {fund.title}
+                                </h3>
+                                <button
+                                    onClick={() => viewFundDetails(fund.id)}
+                                    className="text-gray-600 hover:text-primary"
+                                    title="View Fund Details"
+                                >
+                                    <FaSignInAlt />
+                                </button>
+                            </div>
                             <p className="text-sm text-dark_text mt-1">
                                 {fund.category}
                             </p>
@@ -223,7 +240,7 @@ function FundsPage() {
                                     </button>
                                     <button
                                         onClick={() => deleteFund(fund.id)}
-                                        className="flex-1 bg-secondary text-white py-2 rounded hover:opacity-90 transition flex items-center justify-center"
+                                        className="flex-1 bg-danger_red text-white py-2 rounded hover:opacity-90 transition flex items-center justify-center"
                                     >
                                         <FaTrash className="mr-2" />
                                         Delete
@@ -277,4 +294,4 @@ function FundsPage() {
     );
 }
 
-export { FundsPage, FundsPage as default };
+export default FundsPage;

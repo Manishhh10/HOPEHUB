@@ -29,17 +29,17 @@ function AccountPage() {
   return (
     <div className="min-h-screen bg-off_white p-8 font-sans">
       <h1 className="text-3xl font-bold text-primary mb-8">My Account</h1>
-      <div className="bg-white rounded-lg shadow-lg p-6 max-w-xl mx-auto">
+      <div className="bg-[#edffd6] border border-secondary rounded-lg shadow-lg p-6 max-w-xl mx-auto">
         <div className="mb-4">
-          <p className="text-lg font-medium text-dark_text">First Name:</p>
+          <p className="text-lg font-semibold text-dark_text">First Name:</p>
           <p className="text-xl text-dark_text">{userData.first_name}</p>
         </div>
         <div className="mb-4">
-          <p className="text-lg font-medium text-dark_text">Last Name:</p>
+          <p className="text-lg font-semibold text-dark_text">Last Name:</p>
           <p className="text-xl text-dark_text">{userData.last_name}</p>
         </div>
         <div className="mb-4">
-          <p className="text-lg font-medium text-dark_text">Email:</p>
+          <p className="text-lg font-semibold text-dark_text">Email:</p>
           <p className="text-xl text-dark_text">{userData.email}</p>
         </div>
         <div className="mt-6 flex justify-end">

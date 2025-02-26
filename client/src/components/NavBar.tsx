@@ -17,7 +17,7 @@ function NavBar() {
                     {isLoggedIn && (
                         <Link
                             to="/CreateFund"
-                            className="bg-[#0b3d40] text-[#b9ff66] px-5 py-2 rounded hover:opacity-80 transition"
+                            className="bg-[#0b3d40] text-secondary px-5 py-2 rounded hover:opacity-80 transition"
                         >
                             Start A Hope
                         </Link>
