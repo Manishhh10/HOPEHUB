@@ -101,9 +101,7 @@ export const getFunds = asyncHandler(async (req: Request, res: Response) => {
 
 export const getFundById = asyncHandler(async (req: Request, res: Response) => {
   const fundId = req.params.id;
-  const fund = await Fund.findByPk(fundId,{
-    attributes: { exclude: ['userId'] }
-  });
+  const fund = await Fund.findByPk(fundId);
   
   if (!fund) {
     return res.status(404).json(new ErrorResponse(404, "not_found", false, "Fund not found"));
