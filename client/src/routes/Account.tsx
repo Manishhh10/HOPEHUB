@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router"
-import React from "react";
 import { useAuthStore } from "../stores";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "react-hot-toast";
@@ -45,7 +44,7 @@ function AccountPage() {
         <div className="mt-6 flex justify-end">
           <button
             onClick={handleLogout}
-            className="bg-secondary text-white px-4 py-2 rounded hover:opacity-90 transition"
+            className="bg-danger_red text-white px-4 py-2 rounded hover:opacity-90 transition"
           >
             Logout
           </button>
