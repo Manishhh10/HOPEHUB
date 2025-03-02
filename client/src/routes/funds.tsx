@@ -36,17 +36,23 @@ function FundsPage() {
     loadFunds();
   }, []);
 
-  // Filtered funds: if fund is not mine and filter is "all", only include if verified.
+  // Filtered funds:
+  // - For "all" view: show only funds with status === "verified"
+  // - For "mine" view: show all funds created by currentUser (regardless of status)
   const filteredFunds = useMemo(() => {
     return funds.filter((fund) => {
-      const isMine = currentUser && String(fund.userId) === String(currentUser.id);
-      if (filter === "mine" && !isMine) return false;
-      if (!isMine && fund.status !== "verified") return false;
+      // First, apply the search filter
       if (
         searchQuery.trim() !== "" &&
         !fund.title.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      ) {
         return false;
+      }
+      if (filter === "mine") {
+        return currentUser && String(fund.userId) === String(currentUser.id);
+      } else if (filter === "all") {
+        return fund.status === "verified";
+      }
       return true;
     });
   }, [funds, filter, searchQuery, currentUser]);
@@ -69,6 +75,7 @@ function FundsPage() {
     });
   };
 
+  // Navigate to single-fund details page
   const viewFundDetails = (fundId: number) => {
     navigate({
       to: "/fund-details/$fundId",
@@ -106,8 +113,8 @@ function FundsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-off_white p-8 font-sans">
-      <h1 className="text-3xl font-bold text-primary mb-8">
+    <div className="min-h-screen bg-off_white px-8 py-4 font-sans">
+      <h1 className="text-3xl font-bold text-primary mb-4">
         Active Hope Funds
       </h1>
 
@@ -120,7 +127,7 @@ function FundsPage() {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="px-4 py-2 border rounded w-full md:w-1/3"
         />
-        <div className="flex space-x-4 mb-4 md:mb-0">
+        <div className="flex space-x-4 mt-4 md:mt-0">
           <button
             onClick={() => setFilter("all")}
             className={`px-4 py-2 rounded border ${
@@ -174,25 +181,35 @@ function FundsPage() {
                   <FaSignInAlt />
                 </button>
               </div>
-              <p className="text-sm text-dark_text mt-1">
-                {fund.category}
-              </p>
+              <p className="text-sm text-dark_text mt-1">{fund.category}</p>
+              {/* Status badge (always shown) */}
+              <div className="mt-1">
+                <span
+                  className={`px-2 py-1 text-xs font-semibold rounded ${
+                    fund.status === "verified"
+                      ? "bg-green-100 text-green-800"
+                      : fund.status === "pending"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {fund.status.charAt(0).toUpperCase() + fund.status.slice(1)}
+                </span>
+              </div>
               <div className="mt-4 space-y-1">
                 <p className="text-sm">
                   <span className="font-medium">Location:</span> {fund.city},{" "}
                   {fund.state}
                 </p>
                 <p className="text-sm">
-                  <span className="font-medium">Target:</span> NPR{" "}
-                  {fund.target_amount}
+                  <span className="font-medium">Target:</span> NPR {fund.target_amount}
                 </p>
                 <p className="text-sm">
                   <span className="font-medium">Raised:</span> NPR{" "}
                   {fund.amount_raised || 0}
                 </p>
                 <p className="text-sm">
-                  <span className="font-medium">Donations:</span>{" "}
-                  {fund.donation_count || 0}
+                  <span className="font-medium">Donations:</span> {fund.donation_count || 0}
                 </p>
                 <div className="w-full bg-gray-200 rounded-full h-3">
                   <div
