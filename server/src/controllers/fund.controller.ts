@@ -176,17 +176,21 @@ export const updateFund = asyncHandler(async (req: Request, res: Response) => {
 export const adminUpdateFundStatus = asyncHandler(async (req: Request, res: Response) => {
   const fundId = req.params.id;
   const { status, failure_reason } = req.body;
-  // (Optional) You might want to check if req.user is an admin here.
+
   const fund = await Fund.findByPk(fundId);
   if (!fund) {
     return res.status(404).json(new ErrorResponse(404, "not_found", false, "Fund not found"));
   }
-  // Update the fund status (and failure_reason if needed)
+
   fund.status = status;
+  
   fund.failure_reason = status === "failed" ? failure_reason || "" : null;
+
   await fund.save();
+
   res.status(200).json(new SuccessResponse(200, true, "Fund status updated", fund));
 });
+
 
 
 export const donateToFund = asyncHandler(async (req: Request, res: Response) => {

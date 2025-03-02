@@ -23,7 +23,8 @@ fundRouter.get("/:id", getFundById);
 fundRouter.put("/:id", authenticate, upload.single("image"), updateFund);
 fundRouter.delete("/:id", authenticate, deleteFund);
 fundRouter.post("/:id/donate", donateToFund);
-fundRouter.put("/:id/status", authenticate, adminUpdateFundStatus);
+fundRouter.put("/:id/status", adminUpdateFundStatus);
+
 
 
 export { fundRouter };

@@ -19,7 +19,7 @@ const AdminFundCard: React.FC<AdminFundCardProps> = ({
       if (status === "failed") {
         payload.failure_reason = failureReason
       }
-      const response = await api.put(`/api/v1/funds/${fund.id}/status`, payload)
+      const response = await api.put(`/api/v1/funds/${fund.id}/status`, payload);
       toast.success("Fund status updated!")
       refreshFunds()
     } catch (error) {
