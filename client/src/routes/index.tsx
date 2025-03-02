@@ -29,7 +29,7 @@ function HomePage() {
     return (
         <main className="min-h-screen flex flex-col items-center bg-[#f8f7e8]">
             {/* Hero section */}
-            <section className="rounded-2xl relative w-[95%] bg-[#09442d] text-white overflow-hidden pt-16 pb-24 h-[650px] max-w-[1350px]">
+            <section className="rounded-2xl relative w-[95%] bg-primary text-white overflow-hidden pt-16 pb-24 h-[650px] max-w-[1350px]">
                 {/* Left decorative shape - kept */}
                 <div
                     className="absolute top-0 left-0 w-60 h-60 bg-[#b9ff66] rounded-full"
@@ -61,7 +61,7 @@ function HomePage() {
                         </Link>
 
                         <Link
-                            to="/learn"
+                            to="/about"
                             className="bg-white text-[#09442d] font-semibold px-6 py-3 rounded hover:opacity-80 transition"
                         >
                             Find out more

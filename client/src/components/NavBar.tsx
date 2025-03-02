@@ -48,14 +48,14 @@ function NavBar() {
                             </Link>
                         </>
                     )}
+                    <Link
+                        to="/about"
+                        className="hover:text-[#0b3d40] transition"
+                    >
+                        About
+                    </Link>
                     {isLoggedIn && (
                         <>
-                            <Link
-                                to="/about"
-                                className="hover:text-[#0b3d40] transition"
-                            >
-                                About
-                            </Link>
                             <Link
                                 to="/account"
                                 className="hover:text-[#0b3d40] transition flex justify-center items-center"

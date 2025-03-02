@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { api } from "../utils";
 import { toast } from "react-hot-toast";
 import { useAuthStore } from "../stores";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash, FaShieldAlt } from "react-icons/fa";
 
 export const Route = createFileRoute("/fund-details/$fundId")({
     component: FundDetailsPage,
@@ -18,7 +18,6 @@ function FundDetailsPage() {
     const navigate = useNavigate();
     const [fund, setFund] = useState<any>(null);
     const currentUser = useAuthStore((state) => state.userData);
-
     const [donationModalOpen, setDonationModalOpen] = useState(false);
     const [donationAmount, setDonationAmount] = useState("");
 
@@ -45,7 +44,7 @@ function FundDetailsPage() {
                 amount: Number(donationAmount),
             });
             toast.success("Donation successful!");
-            setFund(response.data.data); // updated fund data
+            setFund(response.data.data);
             setDonationModalOpen(false);
         } catch (error) {
             console.error("Donation failed:", error);
@@ -86,116 +85,253 @@ function FundDetailsPage() {
         (fund.amount_raised / fund.target_amount) * 100,
     );
     const isCompleted = fund.amount_raised >= fund.target_amount;
+    const organizerName =
+        currentUser?.id === fund.userId
+            ? `${currentUser?.first_name} ${currentUser?.last_name}`
+            : "Anonymous";
 
     return (
-        <div className="min-h-screen bg-off_white p-8 font-sans flex flex-col lg:flex-row gap-8">
-            {/* Left Section: Title, Image, Reason */}
-            <div className="bg-white p-6 rounded-lg flex-1">
-                <h1 className="text-3xl font-bold text-primary mb-4">
-                    {fund.title}
-                </h1>
-                {fund.image_url && (
-                    <img
-                        src={`${import.meta.env.VITE_API_ENDPOINT}/uploads/${fund.image_url}`}
-                        alt={fund.title}
-                        className="mb-4 w-full h-auto object-cover rounded"
-                    />
-                )}
-                <p className="text-dark_text text-base leading-relaxed">
-                    {fund.reason}
-                </p>
-            </div>
+        <div className="min-h-screen bg-off_white p-4 md:p-8 font-sans">
+            <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
+                {/* Left Section */}
+                <div className="flex-1">
+                    {fund.image_url && (
+                        <img
+                            src={`${import.meta.env.VITE_API_ENDPOINT}/uploads/${fund.image_url}`}
+                            alt={fund.title}
+                            className="w-full h-64 md:h-96 object-cover rounded-xl shadow-lg"
+                        />
+                    )}
 
-            {/* Right Section: Donation info */}
-            <div className="bg-white p-6 rounded-lg w-full lg:w-[400px] flex flex-col justify-start">
-                <div className="mb-4">
-                    <p className="text-xl font-semibold text-dark_text">
-                        NPR {fund.amount_raised} raised
-                    </p>
-                    <p className="text-sm text-gray-500">
-                        out of NPR {fund.target_amount}
-                    </p>
-                    <div className="mt-2 w-full bg-gray-200 h-3 rounded-full">
-                        <div
-                            className="bg-green-500 h-3 rounded-full"
-                            style={{ width: `${progress}%` }}
-                        ></div>
+                    <div className="mt-6 space-y-6">
+                        <h1 className="text-3xl md:text-4xl font-bold text-primary">
+                            {fund.title}
+                        </h1>
+
+                        {/* Campaign Info Grid */}
+                        <div className="bg-white p-6 rounded-xl shadow-sm grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div>
+                                <p className="text-sm text-gray-500">
+                                    Category
+                                </p>
+                                <p className="font-medium text-primary">
+                                    {fund.category}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500">
+                                    Location
+                                </p>
+                                <p className="font-medium text-primary">
+                                    {fund.city}, {fund.state}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500">
+                                    Donations
+                                </p>
+                                <p className="font-medium text-primary">
+                                    {fund.donation_count}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Progress Section */}
+                        <div className="bg-white p-6 rounded-xl shadow-sm">
+                            <div className="flex justify-between items-center mb-2">
+                                <div>
+                                    <p className="text-2xl font-bold text-primary">
+                                        NPR {fund.amount_raised}
+                                    </p>
+                                    <p className="text-gray-500">
+                                        raised of NPR {fund.target_amount} goal
+                                    </p>
+                                </div>
+                                <span className="bg-secondary/20 text-primary px-4 py-2 rounded-full text-sm font-medium">
+                                    {Math.round(progress)}% funded
+                                </span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-3">
+                                <div
+                                    className="bg-secondary h-3 rounded-full transition-all duration-300"
+                                    style={{ width: `${progress}%` }}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Story Section */}
+                        <div className="bg-white p-6 rounded-xl shadow-sm space-y-4">
+                            <h2 className="text-xl font-semibold text-primary">
+                                Campaign Story
+                            </h2>
+                            <p className="text-dark_text leading-relaxed whitespace-pre-line">
+                                {fund.reason}
+                            </p>
+                        </div>
+
+                        {/* Organizer Section */}
+                        <div className="bg-white p-6 rounded-xl shadow-sm">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white text-lg">
+                                    {organizerName[0]}
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500">
+                                        Organized by
+                                    </p>
+                                    <p className="capitalize font-medium text-dark_text">
+                                        {organizerName}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <p className="mt-2 text-sm text-gray-500">
-                        {Math.round(progress)}% raised
-                    </p>
                 </div>
-                <p className="text-sm text-dark_text mb-4">
-                    <span className="font-medium">From:</span>{" "}
-                    {new Date(fund.start_date).toLocaleDateString()}{" "}
-                    &nbsp;–&nbsp;
-                    <span className="font-medium">To:</span>{" "}
-                    {new Date(fund.end_date).toLocaleDateString()}
-                </p>
-                {fund.status === "failed" && fund.failure_reason && (
-                    <p className="mt-4 text-sm text-red-500">
-                        <span className="font-medium">Failure Reason:</span>{" "}
-                        {fund.failure_reason}
-                    </p>
-                )}
 
-                {isCompleted ? (
-                    <button className="w-full bg-gray-500 text-white py-2 rounded">
-                        Completed
-                    </button>
-                ) : currentUser && currentUser.id === fund.userId ? (
-                    <div className="flex flex-col space-y-4">
-                        <button
-                            onClick={editFund}
-                            className="bg-primary text-white py-2 rounded hover:opacity-90 transition"
-                        >
-                            <FaEdit className="inline-block mr-2" />
-                            Edit
-                        </button>
-                        <button
-                            onClick={deleteFund}
-                            className="bg-danger_red text-white py-2 rounded hover:opacity-90 transition"
-                        >
-                            <FaTrash className="inline-block mr-2" />
-                            Delete
-                        </button>
+                {/* Right Section */}
+                <div className="w-full lg:w-96">
+                    <div className="bg-white p-6 rounded-xl shadow-sm sticky top-6 space-y-6">
+                        {/* Status & Failure Reason */}
+                        <div className="space-y-4">
+                            <div
+                                className={`p-4 rounded-lg ${
+                              fund.status === 'verified' 
+                                  ? 'bg-green-50 text-green-700'
+                                  : fund.status === 'pending'
+                                  ? 'bg-yellow-50 text-yellow-700'
+                                  : 'bg-red-50 text-red-700'
+                          }`}
+                            >
+                                <h3 className="font-semibold mb-1">
+                                    Campaign Status
+                                </h3>
+                                <p
+                                    className={`capitalize px-2 py-1 rounded${
+                                        fund.status === "verified"
+                                            ? "bg-green-100 text-green-800"
+                                            : fund.status === "pending"
+                                              ? "bg-yellow-100 text-yellow-800"
+                                              : "bg-red-100 text-red-800"
+                                    }`}
+                                >
+                                    {fund.status}
+                                </p>
+                            </div>
+
+                            {fund.status === "failed" &&
+                                fund.failure_reason && (
+                                    <div className="bg-red-50 p-4 rounded-lg">
+                                        <h3 className="font-semibold text-red-700 mb-2">
+                                            Campaign Not Successful
+                                        </h3>
+                                        <p className="text-red-600 text-sm">
+                                            {fund.failure_reason}
+                                        </p>
+                                    </div>
+                                )}
+                        </div>
+
+                        {isCompleted ? (
+                            <div className="text-center p-4 bg-green-50 rounded-lg">
+                                <p className="font-semibold text-green-700">
+                                    Campaign Completed
+                                </p>
+                            </div>
+                        ) : currentUser?.id === fund.userId ? (
+                            <div className="space-y-4">
+                                <button
+                                    onClick={editFund}
+                                    className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg hover:bg-accent transition-colors"
+                                >
+                                    <FaEdit className="text-lg" />
+                                    Edit Campaign
+                                </button>
+                                <button
+                                    onClick={deleteFund}
+                                    className="w-full flex items-center justify-center gap-2 bg-danger_red text-white py-3 rounded-lg hover:bg-red-700 transition-colors"
+                                >
+                                    <FaTrash className="text-lg" />
+                                    Delete Campaign
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="space-y-4">
+                                    <button
+                                        onClick={() =>
+                                            setDonationModalOpen(true)
+                                        }
+                                        className="w-full bg-secondary text-primary py-4 rounded-lg font-semibold hover:bg-secondary/90 transition-colors"
+                                    >
+                                        Donate Now
+                                    </button>
+                                    <div className="text-center text-sm text-gray-500">
+                                        <p className="inline-flex items-center gap-2">
+                                            <FaShieldAlt className="w-4 h-4 text-green-500" />
+                                            Donation protected
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="p-4 bg-blue-50 rounded-lg">
+                                    <p className="text-sm text-gray-600">
+                                        {fund.donation_count} people have
+                                        supported this campaign
+                                    </p>
+                                </div>
+                            </>
+                        )}
+
+                        {/* Campaign Dates */}
+                        <div className="pt-4 border-t border-gray-100">
+                            <div className="flex justify-between text-sm">
+                                <div>
+                                    <p className="text-gray-500">Start date</p>
+                                    <p className="text-dark_text">
+                                        {new Date(
+                                            fund.start_date,
+                                        ).toLocaleDateString()}
+                                    </p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-gray-500">End date</p>
+                                    <p className="text-dark_text">
+                                        {new Date(
+                                            fund.end_date,
+                                        ).toLocaleDateString()}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                ) : (
-                    <button
-                        onClick={() => setDonationModalOpen(true)}
-                        className="bg-primary text-off_white py-2 rounded hover:opacity-90 transition"
-                    >
-                        Donate Now
-                    </button>
-                )}
+                </div>
             </div>
 
             {/* Donation Modal */}
             {donationModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                        <h2 className="text-xl font-semibold mb-4 text-primary">
-                            Donate to {fund.title}
+                <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
+                    <div className="bg-white p-6 rounded-xl w-full max-w-md mx-4">
+                        <h2 className="text-2xl font-bold text-primary mb-4">
+                            Support {fund.title}
                         </h2>
                         <input
                             type="number"
                             value={donationAmount}
                             onChange={(e) => setDonationAmount(e.target.value)}
-                            placeholder="Enter donation amount in NPR"
-                            className="w-full p-2 border rounded mb-4"
+                            placeholder="Enter amount (NPR)"
+                            className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20"
                         />
-                        <div className="flex justify-end space-x-4">
+                        <div className="mt-6 flex gap-3 justify-end">
                             <button
                                 onClick={() => setDonationModalOpen(false)}
-                                className="px-4 py-2 rounded bg-gray-300 hover:opacity-90"
+                                className="px-6 py-2 text-gray-600 hover:bg-gray-50 rounded-lg"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={confirmDonation}
-                                className="px-4 py-2 rounded bg-green-500 text-white hover:opacity-90"
+                                className="px-6 py-2 bg-secondary text-primary rounded-lg font-semibold hover:bg-secondary/90 transition-colors"
                             >
-                                Donate
+                                Confirm Donation
                             </button>
                         </div>
                     </div>

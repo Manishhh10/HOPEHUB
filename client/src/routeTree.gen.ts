@@ -15,7 +15,7 @@ import { Route as SignupImport } from "./routes/signup"
 import { Route as LoginImport } from "./routes/login"
 import { Route as FundsImport } from "./routes/funds"
 import { Route as CreatefundImport } from "./routes/createfund"
-import { Route as AccountImport } from "./routes/Account"
+import { Route as AccountImport } from "./routes/account"
 import { Route as IndexImport } from "./routes/index"
 import { Route as FundDetailsFundIdImport } from "./routes/fund-details.$fundId"
 import { Route as EditfundEditfundIdImport } from "./routes/editfund.$editfundId"
@@ -50,8 +50,8 @@ const CreatefundRoute = CreatefundImport.update({
 } as any)
 
 const AccountRoute = AccountImport.update({
-  id: "/Account",
-  path: "/Account",
+  id: "/account",
+  path: "/account",
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -102,10 +102,10 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    "/Account": {
-      id: "/Account"
-      path: "/Account"
-      fullPath: "/Account"
+    "/account": {
+      id: "/account"
+      path: "/account"
+      fullPath: "/account"
       preLoaderRoute: typeof AccountImport
       parentRoute: typeof rootRoute
     }
@@ -179,7 +179,7 @@ declare module "@tanstack/react-router" {
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
-  "/Account": typeof AccountRoute
+  "/account": typeof AccountRoute
   "/createfund": typeof CreatefundRoute
   "/funds": typeof FundsRoute
   "/login": typeof LoginRoute
@@ -193,7 +193,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
-  "/Account": typeof AccountRoute
+  "/account": typeof AccountRoute
   "/createfund": typeof CreatefundRoute
   "/funds": typeof FundsRoute
   "/login": typeof LoginRoute
@@ -208,7 +208,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   "/": typeof IndexRoute
-  "/Account": typeof AccountRoute
+  "/account": typeof AccountRoute
   "/createfund": typeof CreatefundRoute
   "/funds": typeof FundsRoute
   "/login": typeof LoginRoute
@@ -224,7 +224,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | "/"
-    | "/Account"
+    | "/account"
     | "/createfund"
     | "/funds"
     | "/login"
@@ -237,7 +237,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
-    | "/Account"
+    | "/account"
     | "/createfund"
     | "/funds"
     | "/login"
@@ -250,7 +250,7 @@ export interface FileRouteTypes {
   id:
     | "__root__"
     | "/"
-    | "/Account"
+    | "/account"
     | "/createfund"
     | "/funds"
     | "/login"
@@ -302,7 +302,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/Account",
+        "/account",
         "/createfund",
         "/funds",
         "/login",
@@ -317,8 +317,8 @@ export const routeTree = rootRoute
     "/": {
       "filePath": "index.tsx"
     },
-    "/Account": {
-      "filePath": "Account.tsx"
+    "/account": {
+      "filePath": "account.tsx"
     },
     "/createfund": {
       "filePath": "createfund.tsx"
