@@ -3,12 +3,12 @@
 import { useEffect, useState, useMemo } from "react"
 import { api } from "../../utils"
 import { toast } from "react-hot-toast"
-import adminFundCard from "./adminFundCard"
+import AdminFundCard from "./adminFundCard"
 import { useNavigate, createFileRoute } from "@tanstack/react-router"
 
-// export const Route = createFileRoute("/admin/adminDashboard")({
-//   component: adminDashboard,
-// })
+export const Route = createFileRoute("/admin/adminDashboard")({
+  component: adminDashboard,
+})
 
 function adminDashboard() {
   const [funds, setFunds] = useState<any[]>([])
@@ -74,7 +74,7 @@ function adminDashboard() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredFunds.map((fund) => (
-          <adminFundCard
+          <AdminFundCard
             key={fund.id}
             fund={fund}
             refreshFunds={() => {

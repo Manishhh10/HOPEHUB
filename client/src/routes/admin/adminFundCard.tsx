@@ -1,10 +1,10 @@
-// client/src/routes/admin/adminFundCard.tsx
+// client/src/routes/admin/AdminFundCard.tsx
 import React, { useState } from "react"
 import { api } from "../../utils"
 import { toast } from "react-hot-toast"
 import { createFileRoute } from "@tanstack/react-router"
 
-const adminFundCard: React.FC<adminFundCardProps> = ({
+const AdminFundCard: React.FC<AdminFundCardProps> = ({
   fund,
   refreshFunds,
 }) => {
@@ -19,7 +19,7 @@ const adminFundCard: React.FC<adminFundCardProps> = ({
       if (status === "failed") {
         payload.failure_reason = failureReason
       }
-      const response = await api.put(`/api/v1/funds/${fund.id}`, payload)
+      const response = await api.put(`/api/v1/funds/${fund.id}/status`, payload)
       toast.success("Fund status updated!")
       refreshFunds()
     } catch (error) {
@@ -81,12 +81,14 @@ const adminFundCard: React.FC<adminFundCardProps> = ({
   )
 }
 
+export const Route = createFileRoute("/admin/AdminFundCard")({
+  component: AdminFundCard,
+})
 
 // 3. Export props interface (if needed)
-export interface adminFundCardProps {
+export interface AdminFundCardProps {
   fund: any
   refreshFunds: () => void
 }
 
-export default adminFundCard // Default export at the end
-
+export default AdminFundCard // Default export at the end

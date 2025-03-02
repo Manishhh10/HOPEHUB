@@ -10,7 +10,7 @@ export const Route = createRootRoute({
     component: () => {
         const location = useLocation();
         let x: string = location.pathname;
-        console.log(location);
+        // console.log(location);
         const [loading, setLoading] = useState<boolean>(false);
         const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
         const login = useAuthStore((state) => state.login);
