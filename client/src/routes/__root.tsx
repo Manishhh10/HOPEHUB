@@ -1,4 +1,4 @@
-import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { createRootRoute, Outlet, useLocation } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { NavBar, Footer, Loader } from "../components";
 import { Toaster } from "react-hot-toast";
@@ -8,6 +8,9 @@ import { api } from "../utils";
 
 export const Route = createRootRoute({
     component: () => {
+        const location = useLocation();
+        let x: string = location.pathname;
+        console.log(location);
         const [loading, setLoading] = useState<boolean>(false);
         const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
         const login = useAuthStore((state) => state.login);
@@ -35,10 +38,10 @@ export const Route = createRootRoute({
 
         return (
             <>
-                <NavBar />
+                {!x.startsWith("/admin") && (<NavBar />)}
                 <Toaster />
                 {loading ? <Loader /> : <Outlet />}
-                <Footer />
+                {!x.startsWith("/admin") && <Footer />}
                 <TanStackRouterDevtools />
             </>
         );

@@ -1,3 +1,4 @@
+// server/src/models/fund.model.ts
 import {
   DataTypes,
   Model,
@@ -76,6 +77,15 @@ export class Fund extends Model<
   @Attribute(DataTypes.INTEGER)
   @Default(0)
   declare donation_count: number;
+
+  // NEW: Status of the fund ("pending", "verified", or "failed")
+  @Attribute(DataTypes.STRING)
+  @Default("pending")
+  declare status: string;
+
+  // NEW: Optional failure reason if status is "failed"
+  @Attribute(DataTypes.TEXT)
+  declare failure_reason: string | null;
 
   @CreatedAt
   declare created_at: CreationOptional<Date>;

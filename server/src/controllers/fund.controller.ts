@@ -15,6 +15,8 @@ export const createFund = asyncHandler(async (req: Request, res: Response) => {
     target_amount,
     start_date,
     end_date,
+    status,
+    failure_reason,
   } = req.body;
 
   if (!req.user?.id) {
@@ -33,6 +35,7 @@ export const createFund = asyncHandler(async (req: Request, res: Response) => {
     "target_amount",
     "start_date",
     "end_date",
+    "status",
   ];
   const missingFields = requiredFields.filter((field) => !req.body[field]);
   if (missingFields.length > 0) {
@@ -70,6 +73,8 @@ export const createFund = asyncHandler(async (req: Request, res: Response) => {
     end_date,
     image_url,
     userId: req.user.id,
+    status,
+    failure_reason
   });
 
   res.status(201).json(
@@ -120,6 +125,8 @@ export const updateFund = asyncHandler(async (req: Request, res: Response) => {
     target_amount,
     start_date,
     end_date,
+    status,
+    failure_reason,
   } = req.body;
 
   if (!req.user?.id) {
@@ -142,7 +149,7 @@ export const updateFund = asyncHandler(async (req: Request, res: Response) => {
     );
   }
 
-  // Update fund fields; if a field isn’t provided, keep its previous value
+  // Update the basic fund fields
   fund.title = title || fund.title;
   fund.category = category || fund.category;
   fund.reason = reason || fund.reason;
@@ -153,8 +160,10 @@ export const updateFund = asyncHandler(async (req: Request, res: Response) => {
   fund.end_date = end_date ? new Date(end_date) : fund.end_date;
 
   // If a new image is uploaded, update the image_url
-  if (req.file) {
-    fund.image_url = req.file.filename;
+  if (status) {
+    fund.status = status;
+    // If the status is "failed", update the failure_reason; otherwise, clear it.
+    fund.failure_reason = status === "failed" ? failure_reason || "" : null;
   }
 
   await fund.save();
